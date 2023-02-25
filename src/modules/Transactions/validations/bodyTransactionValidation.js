@@ -10,7 +10,7 @@ const transactionsFieldsValidation = yup.object().shape({
 
   valor: yup.number().required("O valor é obrigatório!"),
 
-  data_transacao: yup.date().required("A data é obrigatória!"),
+  data: yup.date().required("A data é obrigatória!"),
 
   categoria_id: yup.number().required("A categoria_id é obrigatória!"),
 });
