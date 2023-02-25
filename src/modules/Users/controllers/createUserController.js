@@ -27,7 +27,9 @@ const createUser = async (req, res) => {
         message: err.errors,
       });
     } else {
-      return res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message });
+
+      console.log(err.message);
     }
   }
 };
