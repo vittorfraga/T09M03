@@ -24,7 +24,7 @@ const createUser = async (req, res) => {
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
-        errors: err.errors,
+        message: err.errors,
       });
     } else {
       return res.status(500).json({ message: err.message });

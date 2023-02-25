@@ -16,7 +16,7 @@ const updateTransaction = async (req, res) => {
     });
 
     if (userTransaction[0].usuario_id !== userId) {
-      return res.status(401).json({ error: "Usuário não autorizado" });
+      return res.status(401).json({ message: "Usuário não autorizado" });
     }
 
     const updatedTransaction = await updateTransactions.update(id, {
@@ -31,8 +31,7 @@ const updateTransaction = async (req, res) => {
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
-        message: "Erro de validação",
-        errors: err.errors,
+        message: err.errors,
       });
     } else {
       return res.status(500).json({ message: `${err}` });
