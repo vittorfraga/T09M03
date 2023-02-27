@@ -31,7 +31,13 @@ const login = async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    return res.status(200).json({ token });
+    const usuario = {
+      id: user.id,
+      nome: user.nome,
+      email: user.email,
+    };
+
+    return res.status(200).json({ usuario, token });
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
