@@ -12,11 +12,17 @@ const createUser = async (req, res) => {
         email,
         senha,
         confirmarSenha,
-      },
-      { abortEarly: false }
+      }
+      // { abortEarly: false }
     );
 
-    await insertUser(nome, email, senha);
+    const user = await insertUser(nome, email, senha);
+
+    if (typeof user === "string") {
+      return res.status(400).json({
+        message: user,
+      });
+    }
 
     return res.status(201).json({
       message: "Usuário criado com sucesso!",
@@ -24,12 +30,11 @@ const createUser = async (req, res) => {
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
-        message: err.errors,
+        message: err.errors[0],
       });
     } else {
-      res.status(500).json({ message: err.message });
-
-      console.log(err.message);
+      res.status(500).json({ message: err });
+      console.log(err);
     }
   }
 };
