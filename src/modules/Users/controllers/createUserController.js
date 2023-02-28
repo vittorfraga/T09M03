@@ -6,15 +6,12 @@ const createUser = async (req, res) => {
   const { nome, email, senha, confirmarSenha } = req.body;
 
   try {
-    await fieldsValidation.validate(
-      {
-        nome,
-        email,
-        senha,
-        confirmarSenha,
-      }
-      // { abortEarly: false }
-    );
+    await fieldsValidation.validate({
+      nome,
+      email,
+      senha,
+      confirmarSenha,
+    });
 
     const user = await insertUser(nome, email, senha);
 
@@ -34,7 +31,6 @@ const createUser = async (req, res) => {
       });
     } else {
       res.status(500).json({ message: err });
-      console.log(err);
     }
   }
 };

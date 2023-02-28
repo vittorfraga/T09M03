@@ -8,18 +8,18 @@ const createSession = async (email, password) => {
     ]);
 
     if (user.rowCount === 0) {
-      return { error: "Usuário não encontrado!" };
+      return "Usuário não encontrado!";
     }
 
     const passwordMatch = await compare(password, user.rows[0].senha);
 
     if (!passwordMatch) {
-      return { error: "Usuário ou senha incorreto!" };
+      return "Usuário ou senha incorreto!";
     }
 
     return user.rows[0];
   } catch (error) {
-    throw new Error();
+    throw new Error(error);
   }
 };
 

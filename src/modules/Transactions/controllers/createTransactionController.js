@@ -1,19 +1,32 @@
 const yup = require("yup");
+const { getCategorieNamedById } = require("../../Users/services/utils");
 const { create } = require("../services/createTransactionService");
 const transactionsFieldsValidation = require("../validations/bodyTransactionValidation");
 
 const createTransaction = async (req, res) => {
-  const userId = req.userId;
+  const usuario_id = req.userId;
   const transaction = req.body;
 
   try {
-    await transactionsFieldsValidation.validate(transaction, {
-      abortEarly: false,
+    await transactionsFieldsValidation.validate(transaction);
+
+    const categoria_nome = await getCategorieNamedById(
+      transaction.categoria_id
+    );
+
+    if (!categoria_nome) {
+      return res.status(404).json({ message: "Categoria não encontrada" });
+    }
+
+    const transactionCreated = await create({
+      ...transaction,
+      usuario_id,
     });
 
-    const transactionCreated = await create(transaction, userId);
-
-    res.status(201).json(transactionCreated);
+    res.status(201).json({
+      ...transactionCreated,
+      categoria_nome,
+    });
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({

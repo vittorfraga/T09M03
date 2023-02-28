@@ -18,13 +18,13 @@ const update = async (nome, email, senha, id) => {
       rows: [user],
     } = await db.query("SELECT * from usuarios WHERE id = $1", [id]);
     if (!user) {
-      throw new Error("User not found");
+      return "Usuário não encontrado!";
     }
 
     if (email !== user.email) {
       const emailExists = await fieldExists("email", email);
       if (emailExists) {
-        throw new Error("Email already exists!");
+        return "O email já existe!";
       }
     }
 
@@ -38,7 +38,7 @@ const update = async (nome, email, senha, id) => {
 
     return updatedUser;
   } catch (err) {
-    throw new Error(`Failed to update user: ${err.message}`);
+    return `Falha ao atualizar o usuário: ${err.message}`;
   }
 };
 

@@ -8,14 +8,16 @@ const fieldExists = async (column, value) => {
   return result.rows[0].exists;
 };
 
-const getFieldById = async (table, field, id) => {
+const getCategorieNamedById = async (id) => {
   const {
     rows: [result],
-  } = await db.query(`SELECT ${field} FROM ${table} WHERE id = $1`, [id]);
+  } = await db.query(`SELECT descricao FROM categorias WHERE id = $1`, [id]);
+
   if (!result) {
-    throw new Error(` Id de ${table} não encontrado`);
+    return null;
   }
-  return result[field];
+
+  return result.descricao;
 };
 
-module.exports = { fieldExists, getFieldById };
+module.exports = { fieldExists, getCategorieNamedById };

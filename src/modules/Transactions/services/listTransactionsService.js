@@ -52,40 +52,36 @@ const getAll = async (id, filtros = []) => {
 };
 
 const getOne = async (id) => {
-  try {
-    const query = {
-      text: `
+  const query = {
+    text: `
         SELECT transacoes.*, categorias.descricao as categoria_nome 
         FROM transacoes
         JOIN categorias ON transacoes.categoria_id = categorias.id 
         WHERE transacoes.id = $1 
         LIMIT 1
       `,
-      values: [id],
-    };
-    const {
-      rows: [transaction],
-    } = await db.query(query);
+    values: [id],
+  };
+  const {
+    rows: [transaction],
+  } = await db.query(query);
 
-    if (!transaction) {
-      throw new Error("Transação não encontrada");
-    }
-
-    return [
-      {
-        id: transaction.id,
-        tipo: transaction.tipo,
-        descricao: transaction.descricao,
-        valor: transaction.valor,
-        data: transaction.data,
-        usuario_id: transaction.usuario_id,
-        categoria_id: transaction.categoria_id,
-        categoria_nome: transaction.categoria_nome,
-      },
-    ];
-  } catch (error) {
-    throw new Error(error.message);
+  if (!transaction) {
+    return "Transação não encontrada";
   }
+
+  return [
+    {
+      id: transaction.id,
+      tipo: transaction.tipo,
+      descricao: transaction.descricao,
+      valor: transaction.valor,
+      data: transaction.data,
+      usuario_id: transaction.usuario_id,
+      categoria_id: transaction.categoria_id,
+      categoria_nome: transaction.categoria_nome,
+    },
+  ];
 };
 
 module.exports = { getAll, getOne };

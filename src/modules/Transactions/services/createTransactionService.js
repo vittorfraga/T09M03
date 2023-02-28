@@ -1,34 +1,18 @@
 const db = require("../../../config/DBconnection");
-const { getFieldById } = require("../../Users/services/utils");
 
-const create = async (transacao, usuario_id) => {
-  const { descricao, valor, data, categoria_id, tipo } = transacao;
-
-  const categoryName = await getFieldById(
-    "categorias",
-    "descricao",
-    categoria_id
-  );
-
+const create = async (transactionData) => {
+  const { tipo, descricao, valor, data, categoria_id, usuario_id } =
+    transactionData;
   const query = {
-    text: "INSERT INTO transacoes (descricao, valor, data, usuario_id, categoria_id, tipo) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-    values: [descricao, valor, data, usuario_id, categoria_id, tipo],
+    text: "INSERT INTO transacoes (tipo, descricao, valor, data, categoria_id, usuario_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+    values: [tipo, descricao, valor, data, categoria_id, usuario_id],
   };
 
   const {
-    rows: [transaction],
+    rows: [result],
   } = await db.query(query);
 
-  return {
-    id: transaction.id,
-    tipo: transaction.tipo,
-    descricao: transaction.descricao,
-    valor: transaction.valor,
-    data: transaction.data,
-    usuario_id: transaction.usuario_id,
-    categoria_id: transaction.categoria_id,
-    categoria_nome: categoryName,
-  };
+  return result;
 };
 
-module.exports = { create, getFieldById };
+module.exports = { create };

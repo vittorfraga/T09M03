@@ -8,18 +8,17 @@ const login = async (req, res) => {
   const { email, senha } = req.body;
 
   try {
-    await sessionValidation.validate(
-      {
-        email,
-        senha,
-      },
-      { abortEarly: false }
-    );
+    await sessionValidation.validate({
+      email,
+      senha,
+    });
 
     const user = await createSession(email, senha);
 
-    if (user.error) {
-      return res.status(401).json({ message: user.error });
+    if (typeof user === "string") {
+      return res.status(400).json({
+        message: user,
+      });
     }
 
     const token = sign(
@@ -41,8 +40,7 @@ const login = async (req, res) => {
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
-        message: "Erro de validação",
-        errors: err.errors,
+        message: err.errors[0],
       });
     } else {
       return res.status(500).json({ message: "Erro interno do servidor" });

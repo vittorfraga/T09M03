@@ -20,29 +20,32 @@ const getUserProfile = async (req, res) => {
     return res.status(500).json({ message: "Erro interno do servidor" });
   }
 };
-
 const updateUserProfile = async (req, res) => {
   const { nome, email, senha, confirmarSenha } = req.body;
   const userId = req.userId;
 
   try {
-    await fieldsValidation.validate(
-      {
-        nome,
-        email,
-        senha,
-        confirmarSenha,
-      },
-      { abortEarly: false }
-    );
+    await fieldsValidation.validate({
+      nome,
+      email,
+      senha,
+      confirmarSenha,
+    });
 
-    await userProfile.update(nome, email, senha, userId);
+    const user = await userProfile.update(nome, email, senha, userId);
+    console.log(user);
+
+    if (typeof user === "string") {
+      return res.status(400).json({
+        message: user,
+      });
+    }
 
     return res.status(200).json({ message: "Usuário atualizado com sucesso!" });
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
-        errors: err.errors,
+        message: err.errors[0],
       });
     } else {
       return res.status(500).json({ message: err.message });
