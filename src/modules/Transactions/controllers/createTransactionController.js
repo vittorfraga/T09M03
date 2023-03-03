@@ -30,7 +30,7 @@ const createTransaction = async (req, res) => {
   } catch (err) {
     if (err instanceof yup.ValidationError) {
       return res.status(400).json({
-        message: err.errors,
+        message: err.errors[0],
       });
     } else {
       return res.status(500).json({ message: `${err}` });

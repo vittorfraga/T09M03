@@ -33,7 +33,6 @@ const updateUserProfile = async (req, res) => {
     });
 
     const user = await userProfile.update(nome, email, senha, userId);
-    console.log(user);
 
     if (typeof user === "string") {
       return res.status(400).json({

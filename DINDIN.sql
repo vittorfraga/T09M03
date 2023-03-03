@@ -15,8 +15,8 @@ CREATE TABLE categorias (
 CREATE TABLE transacoes (
     id SERIAL PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
-    valor INTEGER NOT NULL
-    data_transacao DATE ,
+    valor INTEGER NOT NULL,
+    data DATE ,
     categoria_id INT REFERENCES categorias(id),
     usuario_id INT REFERENCES usuarios(id),
     tipo VARCHAR(10) NOT NULL
