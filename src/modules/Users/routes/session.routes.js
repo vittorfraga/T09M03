@@ -4,7 +4,7 @@ const login = require("../controllers/createSessionController");
 
 const sessionRouter = Router();
 
-sessionRouter.use("/login", limiter);
+//sessionRouter.use("/login", limiter);
 
 sessionRouter.post("/login", login);
 

@@ -18,10 +18,7 @@ const createTransaction = async (req, res) => {
       return res.status(404).json({ message: "Categoria não encontrada" });
     }
 
-    const transactionCreated = await create({
-      ...transaction,
-      usuario_id,
-    });
+    const transactionCreated = await create(transaction, usuario_id);
 
     res.status(201).json({
       ...transactionCreated,

@@ -20,7 +20,6 @@
     "express-validator": "^6.15.0",
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.9.0",
-    "swagger-jsdoc": "^6.2.8",
     "yup": "^1.0.0"
   },
   "devDependencies": {
