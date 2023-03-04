@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const helmet = require("helmet");
 
 const routes = require("./routes");
 const db = require("../config/DBconnection");
@@ -15,7 +14,6 @@ app.use(
   })
 );
 
-app.use(helmet());
 app.use(express.json());
 app.use(routes);
 
