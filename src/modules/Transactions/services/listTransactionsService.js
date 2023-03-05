@@ -11,10 +11,11 @@ const getAll = async (id, filtros = []) => {
   };
 
   if (filtros && filtros.length > 0) {
-    let filtroCategory = filtros.map((_, index) => `$${index + 2}`).join(",");
-    let values = [id, ...filtros];
+    let filtro = filtros.map((filtro) => filtro.replace(/-/g, " "));
+    let filtroCategory = filtro.map((_, index) => `$${index + 2}`).join(",");
+    let values = [id, ...filtro];
 
-    if (filtros.length === 1) {
+    if (filtro.length === 1) {
       query.text = `
         SELECT transacoes.*, categorias.descricao as categoria_nome
         FROM transacoes

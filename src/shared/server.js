@@ -7,12 +7,7 @@ const db = require("../config/DBconnection");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "*",
-    methods: "*",
-  })
-);
+app.use(cors());
 
 app.use(express.json());
 app.use(routes);

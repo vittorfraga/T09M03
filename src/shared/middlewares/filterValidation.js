@@ -4,7 +4,7 @@ const queryValidator = [
   query("filtro").optional().isArray(),
   query("filtro.*")
     .optional()
-    .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/)
+    .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+$/)
     .trim()
     .escape(),
   (req, res, next) => {
