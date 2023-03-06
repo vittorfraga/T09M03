@@ -148,7 +148,7 @@ const getUserStatement = async (req, res) => {
 
     return res.status(200).json(statement);
   } catch (error) {
-    return res.status(500).json({ message: "Erro interno do servidor" });
+    return res.status(500).json({ message: `${error}` });
   }
 };
 

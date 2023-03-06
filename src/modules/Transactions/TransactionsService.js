@@ -130,7 +130,7 @@ const getStatement = async (userId) => {
   let entradas = 0;
   let saidas = 0;
 
-  const transactions = await transactionService.getAll(userId);
+  const transactions = await getAll(userId);
 
   transactions.forEach((transaction) => {
     if (transaction.tipo === "entrada") {
