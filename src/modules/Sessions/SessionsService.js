@@ -1,5 +1,5 @@
 const { compare } = require("bcrypt");
-const db = require("../../../config/DBconnection");
+const db = require("../../config/DBconnection");
 
 const createSession = async (email, password) => {
   try {
@@ -23,4 +23,4 @@ const createSession = async (email, password) => {
   }
 };
 
-module.exports = createSession;
+module.exports = { createSession };

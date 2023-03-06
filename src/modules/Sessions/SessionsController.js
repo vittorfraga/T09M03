@@ -1,8 +1,8 @@
 const { sign } = require("jsonwebtoken");
 const yup = require("yup");
 
-const createSession = require("../services/createSessionService");
-const sessionValidation = require("../validations/createSessionValidation");
+const sessionsService = require("./SessionsService");
+const sessionValidation = require("./SessionsValidations");
 
 const login = async (req, res) => {
   const { email, senha } = req.body;
@@ -13,7 +13,7 @@ const login = async (req, res) => {
       senha,
     });
 
-    const user = await createSession(email, senha);
+    const user = await sessionsService.createSession(email, senha);
 
     if (typeof user === "string") {
       return res.status(400).json({
@@ -43,9 +43,10 @@ const login = async (req, res) => {
         message: err.errors[0],
       });
     } else {
+      console.log(err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
 };
 
-module.exports = login;
+module.exports = { login };

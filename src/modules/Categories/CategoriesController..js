@@ -1,4 +1,4 @@
-const categoriesService = require("../services/categoriesService");
+const categoriesService = require("./CategoriesService");
 
 const listCategories = async (req, res) => {
   try {
@@ -9,4 +9,4 @@ const listCategories = async (req, res) => {
   }
 };
 
-module.exports = listCategories;
+module.exports = { listCategories };

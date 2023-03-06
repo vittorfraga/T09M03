@@ -1,6 +1,24 @@
-const { hash } = require("bcrypt");
-const db = require("../../../config/DBconnection");
-const { fieldExists } = require("./utils");
+const bcrypt = require("bcrypt");
+const db = require("../../config/DBconnection");
+
+const { emailAlreadyExists } = require("../../config/Utils");
+
+async function create(name, email, password) {
+  const emailExists = await emailAlreadyExists(email);
+
+  if (emailExists) {
+    return "O email já existe";
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const query = "INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3)";
+  const values = [name, email, hashedPassword];
+
+  const user = await db.query(query, values);
+
+  return user;
+}
 
 const show = async (id) => {
   const query = {
@@ -22,13 +40,13 @@ const update = async (nome, email, senha, id) => {
     }
 
     if (email !== user.email) {
-      const emailExists = await fieldExists("email", email);
+      const emailExists = await emailAlreadyExists(email);
       if (emailExists) {
         return "O email já existe!";
       }
     }
 
-    const hashedPassword = await hash(senha, 10);
+    const hashedPassword = await bcrypt.hash(senha, 10);
     const query = {
       text: "UPDATE usuarios SET nome = $1, email = $2, senha = $3 WHERE id = $4",
       values: [nome, email, hashedPassword, id],
@@ -42,4 +60,8 @@ const update = async (nome, email, senha, id) => {
   }
 };
 
-module.exports = { show, update };
+module.exports = {
+  create,
+  show,
+  update,
+};

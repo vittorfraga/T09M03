@@ -1,12 +1,45 @@
 const yup = require("yup");
-const userProfile = require("../services/userProfileService");
-const fieldsValidation = require("../validations/createUserValidation");
+const UsersServices = require("./UsersServices");
+const fieldsValidation = require("./UsersValidations");
+
+const createUser = async (req, res) => {
+  const { nome, email, senha, confirmarSenha } = req.body;
+
+  try {
+    await fieldsValidation.validate({
+      nome,
+      email,
+      senha,
+      confirmarSenha,
+    });
+
+    const user = await UsersServices.create(nome, email, senha);
+
+    if (typeof user === "string") {
+      return res.status(400).json({
+        message: user,
+      });
+    }
+
+    return res.status(201).json({
+      message: "Usuário criado com sucesso!",
+    });
+  } catch (err) {
+    if (err instanceof yup.ValidationError) {
+      return res.status(400).json({
+        message: err.errors[0],
+      });
+    } else {
+      res.status(500).json({ message: err });
+    }
+  }
+};
 
 const getUserProfile = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const user = await userProfile.show(userId);
+    const user = await UsersServices.show(userId);
 
     if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado" });
@@ -32,7 +65,7 @@ const updateUserProfile = async (req, res) => {
       confirmarSenha,
     });
 
-    const user = await userProfile.update(nome, email, senha, userId);
+    const user = await UsersServices.update(nome, email, senha, userId);
 
     if (typeof user === "string") {
       return res.status(400).json({
@@ -52,4 +85,4 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { getUserProfile, updateUserProfile };
+module.exports = { createUser, getUserProfile, updateUserProfile };

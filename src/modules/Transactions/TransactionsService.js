@@ -1,4 +1,18 @@
-const db = require("../../../config/DBconnection");
+const db = require("../../config/DBconnection");
+
+const create = async (transactionData, usuario_id) => {
+  const { tipo, descricao, valor, data, categoria_id } = transactionData;
+  const query = {
+    text: "INSERT INTO transacoes (tipo, descricao, valor, data, categoria_id, usuario_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+    values: [tipo, descricao, valor, data, categoria_id, usuario_id],
+  };
+
+  const {
+    rows: [result],
+  } = await db.query(query);
+
+  return result;
+};
 
 const getAll = async (id, filtros = []) => {
   let query = {
@@ -85,4 +99,46 @@ const getOne = async (id) => {
   ];
 };
 
-module.exports = { getAll, getOne };
+const update = async (id, transactionData) => {
+  const { descricao, valor, data, categoria_id, tipo } = transactionData;
+
+  const query = {
+    text: "UPDATE transacoes SET descricao = $1, valor = $2, data = $3, categoria_id = $4, tipo = $5 WHERE id = $6 RETURNING *",
+    values: [descricao, valor, data, categoria_id, tipo, id],
+  };
+  const {
+    rows: [updatedTransaction],
+  } = await db.query(query);
+
+  return updatedTransaction;
+};
+
+const deleteOne = async (id) => {
+  const query = {
+    text: "DELETE FROM transacoes WHERE id = $1",
+    values: [id],
+  };
+  await db.query(query);
+};
+
+const getStatement = async (userId) => {
+  let entradas = 0;
+  let saidas = 0;
+
+  const transactions = await transactionService.getAll(userId);
+
+  transactions.forEach((transaction) => {
+    if (transaction.tipo === "entrada") {
+      entradas += transaction.valor;
+    } else if (transaction.tipo === "saida" || transaction.tipo === "saída") {
+      saidas += transaction.valor;
+    }
+  });
+
+  return {
+    entradas,
+    saidas,
+  };
+};
+
+module.exports = { create, getOne, getAll, update, deleteOne, getStatement };
