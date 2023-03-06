@@ -87,7 +87,7 @@ const updateTransaction = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const userTransaction = await transactionServices.getOne(id);
+    const userTransaction = await transactionsService.getOne(id);
 
     await transactionsFieldsValidation.validate(req.body);
 
