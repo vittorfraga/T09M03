@@ -1,7 +1,13 @@
 const bcrypt = require("bcrypt");
 const db = require("../../config/DBconnection");
 
-const { emailAlreadyExists } = require("../../config/Utils");
+const emailAlreadyExists = async (value) => {
+  const result = await db.query(
+    `SELECT EXISTS (SELECT 1 FROM usuarios WHERE email =$1)`,
+    [value]
+  );
+  return result.rows[0].exists;
+};
 
 async function create(name, email, password) {
   const emailExists = await emailAlreadyExists(email);

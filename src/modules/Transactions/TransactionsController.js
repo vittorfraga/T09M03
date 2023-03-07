@@ -1,6 +1,5 @@
 const yup = require("yup");
 
-const { getCategoryNamedById } = require("../../config/Utils");
 const transactionsService = require("./TransactionsService");
 const transactionsFieldsValidation = require("./TransactionsValidation");
 
@@ -11,7 +10,9 @@ const createTransaction = async (req, res) => {
   try {
     await transactionsFieldsValidation.validate(transaction);
 
-    const categoria_nome = await getCategoryNamedById(transaction.categoria_id);
+    const categoria_nome = await transactionsService.getCategoryNamedById(
+      transaction.categoria_id
+    );
 
     if (!categoria_nome) {
       return res.status(404).json({ message: "Categoria não encontrada" });
@@ -95,7 +96,9 @@ const updateTransaction = async (req, res) => {
       return res.status(401).json({ message: "Usuário não autorizado" });
     }
 
-    const categoria_nome = await getCategoryNamedById(categoria_id);
+    const categoria_nome = await transactionsService.getCategoryNamedById(
+      categoria_id
+    );
 
     const updatedTransaction = await transactionsService.update(id, {
       descricao,

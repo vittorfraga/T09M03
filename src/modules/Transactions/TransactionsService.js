@@ -1,39 +1,15 @@
 const db = require("../../config/DBconnection");
 
-const buildGetAllQuery = (id, filtros = []) => {
-  let query = {
-    text: `SELECT transacoes.*, categorias.descricao as categoria_nome
-      FROM transacoes
-      JOIN categorias ON transacoes.categoria_id = categorias.id
-      WHERE usuario_id = $1  ORDER BY id`,
-    values: [id],
-  };
+const getCategoryNamedById = async (id) => {
+  const {
+    rows: [result],
+  } = await db.query(`SELECT descricao FROM categorias WHERE id = $1`, [id]);
 
-  if (filtros && filtros.length > 0) {
-    let filtro = filtros.map((filtro) => filtro.replace(/-/g, " "));
-    let filtroCategory = filtro.map((_, index) => `$${index + 2}`).join(",");
-    let values = [id, ...filtro];
-
-    if (filtro.length === 1) {
-      query.text = `
-          SELECT transacoes.*, categorias.descricao as categoria_nome
-          FROM transacoes
-          JOIN categorias ON transacoes.categoria_id = categorias.id
-          WHERE usuario_id = $1 AND categorias.descricao = $2 ORDER BY id
-        `;
-    } else {
-      query.text = `
-          SELECT transacoes.*, categorias.descricao as categoria_nome
-          FROM transacoes
-          JOIN categorias ON transacoes.categoria_id = categorias.id
-          WHERE usuario_id = $1 AND categorias.descricao IN (${filtroCategory}) ORDER BY id
-        `;
-    }
-
-    query.values = values;
+  if (!result) {
+    return null;
   }
 
-  return query;
+  return result.descricao;
 };
 
 const create = async (transactionData, usuario_id) => {
@@ -51,7 +27,38 @@ const create = async (transactionData, usuario_id) => {
 };
 
 const getAll = async (id, filtros = []) => {
-  const query = buildGetAllQuery(id, filtros);
+  let query = {
+    text: `SELECT transacoes.*, categorias.descricao as categoria_nome
+    FROM transacoes
+    JOIN categorias ON transacoes.categoria_id = categorias.id
+    WHERE usuario_id = $1  ORDER BY id
+    `,
+    values: [id],
+  };
+
+  if (filtros && filtros.length > 0) {
+    let filtro = filtros.map((filtro) => filtro.replace(/-/g, " "));
+    let filtroCategory = filtro.map((_, index) => `$${index + 2}`).join(",");
+    let values = [id, ...filtro];
+
+    if (filtro.length === 1) {
+      query.text = `
+        SELECT transacoes.*, categorias.descricao as categoria_nome
+        FROM transacoes
+        JOIN categorias ON transacoes.categoria_id = categorias.id
+        WHERE usuario_id = $1 AND categorias.descricao = $2  ORDER BY id
+      `;
+    } else {
+      query.text = `
+        SELECT transacoes.*, categorias.descricao as categoria_nome
+        FROM transacoes
+        JOIN categorias ON transacoes.categoria_id = categorias.id
+        WHERE usuario_id = $1 AND categorias.descricao IN (${filtroCategory}) ORDER BY id
+      `;
+    }
+
+    query.values = values;
+  }
 
   const { rows: transactions } = await db.query(query);
 
@@ -146,4 +153,12 @@ const getStatement = async (userId) => {
   };
 };
 
-module.exports = { create, getOne, getAll, update, deleteOne, getStatement };
+module.exports = {
+  create,
+  getOne,
+  getAll,
+  update,
+  deleteOne,
+  getStatement,
+  getCategoryNamedById,
+};
